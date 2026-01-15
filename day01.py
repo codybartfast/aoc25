@@ -3,30 +3,37 @@ def parse(input_text):
 
 def turn(start, instr):
     dir, turns = instr
-    rslt = start - turns if dir == 'L' else start + turns
-    return rslt % 100
+    if turns % 100 == 0:
+        raise NotImplementedError("This case probably not covered")
+    stop = (start - turns if dir == 'L' else start + turns) % 100
+
+    zero_clicks = turns // 100
+    if (start != 0 and stop != 0 and
+            ((dir == "L" and start < stop)
+                or (dir == "R" and stop < start))):
+        zero_clicks += 1
+    return (stop, zero_clicks)
     
 def bells(input_text):
     instructions = parse(input_text)
-    print(instructions, "\n")
     yield instructions
 
     position = 50
-    values = [position]
+    zero_stops = 0
+    zero_clicks = 0
     for instr in instructions:
-        position = turn(position, instr)
-        values.append(position)
+        position, clicks = turn(position, instr)
+        zero_stops += position == 0
+        zero_clicks += clicks
 
-    yield len([val for val in values if val == 0])
-    yield None
+    yield zero_stops
+    yield zero_stops + zero_clicks
 
-def jingle(input_filename = None):
+def jingle(filename = None):
     import sack
-    input_text = sack.read_input(input_filename)
+    input_text = sack.read_input(filename)
     sack.present(lambda: bells(input_text))
     
-    
+               
 if __name__ == "__main__":
     jingle()
-
-
