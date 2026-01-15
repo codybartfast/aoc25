@@ -2,9 +2,9 @@ def parse(input_text):
     return input_text
 
 def bells(input_text):
-    input = parse(input_text)
-    print(input, "\n")
-    yield input
+    data = parse(input_text)
+    print(data, "\n")
+    yield data
     yield None
     yield None
 

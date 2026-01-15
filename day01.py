@@ -1,11 +1,23 @@
 def parse(input_text):
     return [(line[0], int(line[1:])) for line in input_text.splitlines()]
 
+def turn(start, instr):
+    dir, turns = instr
+    rslt = start - turns if dir == 'L' else start + turns
+    return rslt % 100
+    
 def bells(input_text):
-    input = parse(input_text)
-    print(input, "\n")
-    yield input
-    yield None
+    instructions = parse(input_text)
+    print(instructions, "\n")
+    yield instructions
+
+    position = 50
+    values = [position]
+    for instr in instructions:
+        position = turn(position, instr)
+        values.append(position)
+
+    yield len([val for val in values if val == 0])
     yield None
 
 def jingle(input_filename = None):
@@ -15,4 +27,6 @@ def jingle(input_filename = None):
     
     
 if __name__ == "__main__":
-    jingle("test1")
+    jingle()
+
+
