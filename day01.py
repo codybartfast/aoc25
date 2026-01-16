@@ -4,11 +4,9 @@ def parse(input_text):
 
 def turn(start, instr):
     dir, turns = instr
-    if turns % 100 == 0:
-        raise NotImplementedError("This case probably not covered")
-    stop = (start - turns if dir == "L" else start + turns) % 100
 
-    zero_clicks = turns // 100
+    assert turns % 100 != 0, "case not checked"
+    stop = (start - turns if dir == "L" else start + turns) % 100
     if (
         start != 0
         and stop != 0
