@@ -1,16 +1,37 @@
+import math
 import re
 
 
 def parse(input):
     return [
         (int(start), int(end))
-        for [start, end] in [re.findall("\d+", span) for span in input.split(",")]
+        for [start, end] in [re.findall(r"\d+", span) for span in input.split(",")]
     ]
 
+
+def does_repeat_size(size, n):
+    f = 10**size
+    pattern = n % f
+    n //= f
+    while n:
+        if n % f != pattern:
+            return False
+        n //= f
+    return True
+
+
+def does_repeat(n):
+    length = int(math.log10(n)) + 1
+    for size in range(1, (length // 2) + 1):
+        if length % size == 0:
+            if does_repeat_size(size, n):
+                return True
+
+
 def is_double(n):
-    ntxt = str(n)
-    lng = len(ntxt)
-    return lng % 2 == 0 and ntxt[0:lng//2] == ntxt[lng//2:]
+    length = int(math.log10(n)) + 1
+    return length % 2 == 0 and does_repeat_size(length // 2, n)
+
 
 def check_ids(id_range, is_invalid):
     start, end = id_range
@@ -18,14 +39,12 @@ def check_ids(id_range, is_invalid):
         if is_invalid(n):
             yield n
 
+
 def bells(input):
-    data = parse(input)
-    print(data, "\n")
-    yield data
-    # for id_range in data:
-    #     print(sum(check_ids(id_range, is_double)))
-    yield sum([sum(check_ids(id_range, is_double)) for id_range in data])
-    yield None
+    id_ranges = parse(input)
+    yield id_ranges
+    yield sum([sum(check_ids(id_range, is_double)) for id_range in id_ranges])
+    yield sum([sum(check_ids(id_range, does_repeat)) for id_range in id_ranges])
 
 
 def jingle(input_filename=None):
@@ -36,5 +55,4 @@ def jingle(input_filename=None):
 
 
 if __name__ == "__main__":
-    # jingle("test1")
     jingle()
