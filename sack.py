@@ -7,11 +7,13 @@ def _day():
     return day
  
 def read_input(input_filename = None):
-    if input_filename == None:
+    if input_filename is None:
         input_filename = "input"    
+    if "." not in input_filename:
+        input_filename += ".txt"
     day = _day()
     input_path = Path(__file__).resolve().parent / "input" / "2025"
-    input_path = input_path / f"day{day}" / f"{input_filename}.txt"
+    input_path = input_path / f"day{day}" / f"{input_filename}"
     with open(input_path, encoding="utf-8") as f:
          input = f.read()
     return input 
@@ -22,7 +24,7 @@ def present(solver_action, title=None):
     pc_start = time.perf_counter()
     day = _day()
 
-    if title == None:
+    if title is None:
         title = f"Day {day}"
 
     print()
@@ -33,7 +35,7 @@ def present(solver_action, title=None):
     solve_it=solver_action()
     
     pc_parse_before = time.perf_counter()
-    data = next(solve_it)
+    next(solve_it)
     pc_parse_after = time.perf_counter()
     
     pc_part1_before = time.perf_counter()
