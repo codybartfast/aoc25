@@ -4,7 +4,6 @@ def parse(input_text):
 
 def turn(start, instr):
     dir, turns = instr
-
     stop = (start - turns if dir == "L" else start + turns) % 100
     zero_clicks = turns // 100
     if (
