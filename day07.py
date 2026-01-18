@@ -2,32 +2,37 @@ def parse(input):
     return input.splitlines()
 
 def deflect(beams, row):
-    hits = [idx for idx, m in enumerate(row) if beams[idx] == 1 and row[idx] == "^"]    
-    for hit in hits:
-        # if hit > 0:
-        beams[hit - 1] = 1
-        beams[hit] = 0
-        # if hit < len(beams) - 1:
-        beams[hit + 1] = 1
-    return len(hits)
+    nhits = 0
+    new_beams = beams.copy()
+    for idx, m in enumerate(row):
+        nbeams = beams[idx]
+        if nbeams > 0 and row[idx] == "^":
+            nhits += 1
+            new_beams[idx - 1] += nbeams
+            new_beams[idx] = 0
+            new_beams[idx + 1] += nbeams
+             
+    return new_beams, nhits
 
 def part1(manifold):
     beams = [0] * len(manifold[0])
     beams[manifold[0].index("S")] = 1
     nhits = 0
     for row in manifold:
-        nhits += deflect(beams, row)
-    return nhits
+        beams, hits = deflect(beams, row)
+        nhits += hits
+    return nhits, sum(beams)
             
 def bells(input):
     manifold = parse(input)
-    # print(manifold, "\n")
 
     yield None
 
-    yield part1(manifold)
+    nhits, nbeams = part1(manifold)
+    
+    yield nhits
 
-    yield None
+    yield nbeams
 
 
 def jingle(input_filename=None):
