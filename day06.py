@@ -4,6 +4,7 @@ def parse1(input):
     rows.append(ops_line.split())
     return list(zip(*rows))
 
+
 def parse2(input):
     cols = list(zip(*input.splitlines()))
 
@@ -19,29 +20,27 @@ def parse2(input):
 
     exercises = []
     for chunk in chunks:
-        nums = [int("".join(col[:-1])) for col in chunk]
+        nums_op = [int("".join(col[:-1])) for col in chunk]
         op = [char for char in [col[-1] for col in chunk] if char != " "][0]
-        nums.append(op)
-        exercises.append(nums)
+        nums_op.append(op)
+        exercises.append(nums_op)
     return exercises
-    
 
-def krakow(col):
+
+def apply(nums_op):
     import math
-    [*nums, op] = col
+
+    [*nums, op] = nums_op
     return (sum if op == "+" else math.prod)(nums)
-    
+
+
 def bells(input):
     exs1 = parse1(input)
     exs2 = parse2(input)
 
-    print(exs1)
-    print(exs2)
     yield None
-
-    yield sum(krakow(col) for col in exs1)
-    yield sum(krakow(col) for col in exs2)
-
+    yield sum(apply(nums_op) for nums_op in exs1)
+    yield sum(apply(nums_op) for nums_op in exs2)
 
 
 def jingle(input_filename=None):
@@ -53,6 +52,7 @@ def jingle(input_filename=None):
 
 if __name__ == "__main__":
     import sys
+
     input_filename = sys.argv[1] if len(sys.argv) > 1 else None
     print(f"sack: filename: {input_filename}")
     jingle(input_filename)
