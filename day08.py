@@ -12,10 +12,12 @@ def parse(input):
 
 def join_circuits(junctions, pair):
     ([_, _, _, c1], [_, _, _, c2]) = pair
-    if c1 != c2:
-        for j in junctions:
-            if j[3] == c2:
-                j[3] = c1
+    if c1 == c2:
+        return False
+    for j in junctions:
+        if j[3] == c2:
+            j[3] = c1
+    return True
 
 
 def signature(junctions):
@@ -34,22 +36,26 @@ def all_pairs(junctions):
             yield (dist_sqr, first, second)
 
 
-def bobbins(junctions, rounds):
-    pairs = list(all_pairs(junctions))
-    pairs.sort(key=lambda pair: pair[0])
-    pairs = pairs[:rounds]
-    for _, j1, j2 in pairs:
-        join_circuits(junctions, (j1, j2))
-    return signature(junctions)
-
-
 def bells(input):
     junctions = parse(input)
     yield None
 
-    yield bobbins(junctions, 1000)
+    trial = 1000
 
-    yield None
+    pairs = list(all_pairs(junctions))
+    pairs.sort(key=lambda pair: pair[0])
+
+    trial_pairs = pairs[:trial]
+    for _, j1, j2 in trial_pairs:
+        join_circuits(junctions, (j1, j2))
+    yield signature(junctions)
+
+    last_pair = []
+    for _, j1, j2 in pairs[trial:]:
+        pair = (j1, j2)
+        if join_circuits(junctions, pair):
+            last_pair = pair
+    yield last_pair[0][0] * last_pair[1][0]
 
 
 def jingle(input_filename=None):
