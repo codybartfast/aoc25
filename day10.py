@@ -26,6 +26,10 @@ def parse(input):
     return machines
 
 
+# Part 1
+# ======
+
+
 def combinations(items):
     def unsorted_combos(items):
         if items:
@@ -47,6 +51,10 @@ def light_the_lights(pattern, light_masks):
             lit ^= button
             if lit == pattern:
                 return len(combo)
+
+
+# Part 2
+# ======
 
 
 def press_the_buttons(buttons, jolts, target, other_buttons, count):
@@ -99,6 +107,9 @@ def jolt_the_jolts(buttons, jolts, count):
     return rslt
 
 
+# ======
+
+
 def bells(input):
     machines = parse(input)
     # print(input)
@@ -124,5 +135,4 @@ if __name__ == "__main__":
     import sys
 
     input_filename = sys.argv[1] if len(sys.argv) > 1 else None
-    print(f"sack: filename: {input_filename}")
     jingle(input_filename)
