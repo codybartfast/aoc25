@@ -23,5 +23,4 @@ def jingle(input_filename=None):
 if __name__ == "__main__":
     import sys
     input_filename = sys.argv[1] if len(sys.argv) > 1 else None
-    print(f"sack: filename: {input_filename}")
     jingle(input_filename)
