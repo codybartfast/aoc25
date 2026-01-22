@@ -6,7 +6,7 @@ def bells(input):
     data = parse(input)
     print(data, "\n")
 
-    yield None
+    yield data
 
     yield None
 
