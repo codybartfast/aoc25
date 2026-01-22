@@ -3,52 +3,57 @@ class Device:
         self.name = name
         self.out_to = out_to
 
-        self.in_from = []
-        self.path_count = None
-
-    def __repr__(self):
-        return f"Device({self.name}, {self.out_to}), path_count:{self.path_count}  in_from:   {self.in_from} "
-
-
 
 def parse(input):
-    devices = {name: Device(name, out_txt.split(" ")) for name, out_txt in [line.split(": ") for line in input.splitlines()]}
+    devices = {
+        name: Device(name, out_txt.split(" "))
+        for name, out_txt in [line.split(": ") for line in input.splitlines()]
+    }
     devices["out"] = Device("out", [])
     for device in devices.values():
-        if device.name == "you":
-            device.path_count = 1
-        for down_stream in device.out_to:
-            devices[down_stream].in_from.append(device.name)
+        device.out_to = [devices[name] for name in device.out_to]
     return devices
 
-def path_count(devices, device_name):
-    device = devices[device_name]
-    if device.path_count is not None:
-        return device.path_count
-    count = sum(path_count(devices, inner) for inner in device.in_from)
-    device.path_count = count
-    return count
-    
+
+def path_count(devices, start, end):
+    start, end = devices[start], devices[end]
+    counts = {end: 1}
+
+    def search(start):
+        if start in counts:
+            return counts[start]
+        count = sum(search(outer) for outer in start.out_to)
+        counts[start] = count
+        return count
+
+    return search(start)
+
 
 def bells(input):
     devices = parse(input)
 
-    yield None
+    yield devices
 
-    yield path_count(devices, "out")
+    yield path_count(devices, "you", "out")
 
-    yield None
+    svr2dac = path_count(devices, "svr", "dac")
+    svr2fft = path_count(devices, "svr", "fft")
+    dac2fft = path_count(devices, "dac", "fft")
+    fft2dac = path_count(devices, "fft", "dac")
+    dac2out = path_count(devices, "dac", "out")
+    fft2out = path_count(devices, "fft", "out")
+    yield (svr2dac * dac2fft * fft2out) + (svr2fft * fft2dac * dac2out)
 
 
 def jingle(input_filename=None):
     import sack
 
     input = sack.read_input(input_filename)
-    print("input: ", input)
     sack.present(lambda: bells(input))
 
 
 if __name__ == "__main__":
     import sys
+
     input_filename = sys.argv[1] if len(sys.argv) > 1 else None
     jingle(input_filename)
