@@ -36,13 +36,15 @@ def bells(input):
 
     yield path_count(devices, "you", "out")
 
-    svr2dac = path_count(devices, "svr", "dac")
-    svr2fft = path_count(devices, "svr", "fft")
-    dac2fft = path_count(devices, "dac", "fft")
-    fft2dac = path_count(devices, "fft", "dac")
-    dac2out = path_count(devices, "dac", "out")
-    fft2out = path_count(devices, "fft", "out")
-    yield (svr2dac * dac2fft * fft2out) + (svr2fft * fft2dac * dac2out)
+    yield (
+        path_count(devices, "svr", "dac")
+        * path_count(devices, "dac", "fft")
+        * path_count(devices, "fft", "out")
+    ) + (
+        path_count(devices, "svr", "fft")
+        * path_count(devices, "fft", "dac")
+        * path_count(devices, "dac", "out")
+    )
 
 
 def jingle(input_filename=None):
